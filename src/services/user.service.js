@@ -13,7 +13,7 @@ const bcrypt = require("bcryptjs");
 const getUserById = async (id) => {
   console.log("inside getUserById: " + id);
   try {
-    const userById = await User.findById({ id: _id });
+    const userById = await User.findById({ _id: id });
     return userById;
   } catch (error) {
     console.log(error);
