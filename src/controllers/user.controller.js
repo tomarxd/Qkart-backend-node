@@ -39,8 +39,15 @@ const { userService } = require("../services");
  *
  */
 const getUser = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+  console.log(userId);
+  if (userId) {
+    const userData = await userService.getUserById(userId);
+    return res.status(200).json(userData);
+  } else {
+    return res.status(404).json({ msg: "User not found" });
+  }
 });
-
 
 module.exports = {
   getUser,
