@@ -60,13 +60,12 @@ const getUserByEmail = async (email) => {
  * 200 status code on duplicate email - https://stackoverflow.com/a/53144807
  */
 const createUser = async (user) => {
-  try {
-    const data = await User.create(user);
-    return data;
-  } catch (error) {
-    console.log(error);
-    return error;
+  const emailExist = await User.isEmailTaken(user.email);
+  if (emailExist) {
+    throw new ApiError(httpStatus.OK, "Email already registered");
   }
+  const userData = await User.create(user);
+  return userData;
 };
 
 module.exports = { getUserById, getUserByEmail, createUser };
