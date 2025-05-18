@@ -13,11 +13,16 @@ const ApiError = require("../utils/ApiError");
  * --- resolve the promise
  */
 const verifyCallback = (req, resolve, reject) => async (err, user, info) => {
+  if (!user || err || info) {
+    return reject(new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate"));
+  }
+  req.user = user;
+  resolve();
 };
 
 /**
  * Auth middleware to authenticate using Passport "jwt" strategy with sessions disabled and a custom callback function
- * 
+ *
  */
 const auth = async (req, res, next) => {
   return new Promise((resolve, reject) => {

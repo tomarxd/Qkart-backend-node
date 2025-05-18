@@ -1,7 +1,6 @@
 const { User } = require("../models");
 const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
-const bcrypt = require("bcryptjs");
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement getUserById(id)
 /**
@@ -11,13 +10,13 @@ const bcrypt = require("bcryptjs");
  * @returns {Promise<User>}
  */
 const getUserById = async (id) => {
-  console.log("inside getUserById: " + id);
-  try {
-    const userById = await User.findById({ _id: id });
-    return userById;
-  } catch (error) {
-    console.log(error);
+  const userById = await User.findById(id);
+  console.log("user by id", userById);
+
+  if (!userById) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "User not found");
   }
+  return userById;
 };
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement getUserByEmail(email)
@@ -64,6 +63,7 @@ const createUser = async (user) => {
   if (emailExist) {
     throw new ApiError(httpStatus.OK, "Email already registered");
   }
+
   const userData = await User.create(user);
   return userData;
 };

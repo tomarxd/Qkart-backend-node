@@ -11,5 +11,10 @@ router.get(
   validate(productValidation.getProduct),
   productController.getProductById
 );
+router.get(
+  "/:productId",
+  validate(productValidation.getProduct),
+  productController.getProductById
+);
 
 module.exports = router;
