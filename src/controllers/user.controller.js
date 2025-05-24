@@ -54,17 +54,24 @@ const { userService } = require("../services");
 const getUser = catchAsync(async (req, res) => {
   const { userId } = req.params;
   const { q } = req.query;
-  let user = await userService.getUserById(userId);
+  const user = await userService.getUserById(userId);
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
 
   if (userId != req.user._id) {
-    throw new ApiError(403, "You are not authorized");
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "User not authorized to access this resource"
+    );
   }
 
-  if (q) {
-    user = await userService.getUserAddressById(userId, q);
-    return res.status(httpStatus.OK).send(user);
+  if (q === "address") {
+    return res.status(httpStatus.OK).send({ address: user.address });
   }
-  return res.status(200).send(user);
+
+  return res.status(httpStatus.OK).send(user);
 });
 
 const setAddress = catchAsync(async (req, res) => {

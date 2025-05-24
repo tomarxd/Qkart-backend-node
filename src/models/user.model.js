@@ -24,7 +24,6 @@ const userSchema = mongoose.Schema(
       type: String,
       trim: true,
       minLength: 8,
-
     },
     password: {
       type: String,
@@ -85,6 +84,18 @@ userSchema.pre("save", function (next) {
  */
 userSchema.methods.isPasswordMatch = async function (password) {
   return bcrypt.compare(password, this.password);
+};
+
+/**
+ * Check if user have set an address other than the default address
+ * - should return true if user has set an address other than default address
+ * - should return false if user's address is the default address
+ *
+ * @returns {Promise<boolean>}
+ */
+userSchema.methods.hasSetNonDefaultAddress = async function () {
+  const user = this;
+  return user.address !== config.default_address;
 };
 
 /*

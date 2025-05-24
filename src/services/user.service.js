@@ -1,8 +1,8 @@
 const { User } = require("../models");
 const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
+const bcrypt = require("bcryptjs");
 
-// TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement getUserById(id)
 /**
  * Get User by id
  * - Fetch user object from Mongo using the "_id" field and return user object
@@ -11,12 +11,24 @@ const ApiError = require("../utils/ApiError");
  */
 const getUserById = async (id) => {
   const userById = await User.findById(id);
-  console.log("user by id", userById);
 
   if (!userById) {
     throw new ApiError(httpStatus.BAD_REQUEST, "User not found");
   }
   return userById;
+};
+
+// TODO: CRIO_TASK_MODULE_CART - Implement getUserAddressById()
+/**
+ * Get subset of user's data by id
+ * - Should fetch from Mongo only the email and address fields for the user apart from the id
+ *
+ * @param {ObjectId} id
+ * @returns {Promise<User>}
+ */
+const getUserAddressById = async (id) => {
+  const user = await User.findOne({ _id: id }, { email: 1, address: 1 });
+  return user;
 };
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement getUserByEmail(email)
@@ -29,10 +41,10 @@ const getUserById = async (id) => {
 const getUserByEmail = async (email) => {
   try {
     const userByEmail = await User.findOne({ email: email });
-
     return userByEmail;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
@@ -68,4 +80,17 @@ const createUser = async (user) => {
   return userData;
 };
 
-module.exports = { getUserById, getUserByEmail, createUser };
+const setAddress = async (user, newAddress) => {
+  user.address = newAddress;
+  await user.save();
+
+  return user.address;
+};
+
+module.exports = {
+  getUserById,
+  getUserByEmail,
+  createUser,
+  getUserAddressById,
+  setAddress,
+};

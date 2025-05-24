@@ -11,8 +11,6 @@ const helmet = require("helmet");
 
 const app = express();
 
-
-
 // set security HTTP headers - https://helmetjs.github.io/
 app.use(helmet());
 
